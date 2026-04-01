@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <title>UniverseNet</title>
     <link rel="icon" type="image/x-icon" href="UniverseNet.ico">
-
-    <!-- Open Graph Meta -->
-    <meta property="og:title" content="UniverseNet">
-    <meta property="og:description" content="Search the world's information, including webpages, images, videos and more. UniverseNet has many special features to help you find exactly what you're looking for.">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="UniverseNet_Title.png">
-
     <style>
         body {
             margin: 0;
@@ -26,6 +19,7 @@
         }
         .logo {
             width: 300px;
+            cursor: pointer;
         }
         .search-box {
             margin-top: 20px;
@@ -76,72 +70,124 @@
 </head>
 <body>
 <div class="center" id="home">
-    <img src="UniverseNet_Title.png" class="logo"><br>
+    <img src="UniverseNet_Title.png" class="logo" onclick="goHome()"><br>
     <div class="search-box">
         <input type="text" id="searchInput"><br>
         <button onclick="search()">UniverseNet Search</button>
-        <button id="luckyBtn" onclick="feelingLucky()">I'm Feeling Lucky</button>
+        <button id="luckyBtn" onclick="feelingLucky()">I'm Feeling Lucky</button><br>
+        <button onclick="showAllPages()">Discover All Pages</button>
     </div>
 </div>
-
 <div class="topbar" id="topbar">
     <img src="UniverseNet_Title.png" onclick="goHome()">
     <input type="text" id="searchTop" onkeydown="checkEnter(event)">
 </div>
-
 <div class="results" id="results"></div>
 
 <script>
 let luckyClicked = false;
 
+// Main search
 function search() {
     let query = document.getElementById("searchInput").value.toLowerCase();
     showResults(query);
 }
 
+// I'm Feeling Lucky button: only changes text
 function feelingLucky() {
-    let btn = document.getElementById("luckyBtn");
-    luckyClicked = !luckyClicked;
-    btn.innerText = luckyClicked ? "I'm not Feeling Lucky" : "I'm Feeling Lucky";
+    if (!luckyClicked) {
+        document.getElementById("luckyBtn").innerText = "I'm not Feeling Lucky";
+        luckyClicked = true;
+    }
 }
 
+// Enter in topbar
 function checkEnter(e) {
     if (e.key === "Enter") {
         showResults(document.getElementById("searchTop").value.toLowerCase());
     }
 }
 
+// Go back to home
+function goHome() {
+    document.getElementById("home").style.display = "block";
+    document.getElementById("topbar").style.display = "none";
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("searchInput").value = "";
+    document.getElementById("searchTop").value = "";
+    luckyClicked = false;
+}
+
+// Show search results
 function showResults(query) {
     document.getElementById("home").style.display = "none";
     document.getElementById("topbar").style.display = "block";
     let resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
 
-    if (query === "xx32o24000") {
-        resultsDiv.innerHTML = `
-            <div class="result">
-                <div class="result-title" onclick="openUnknown()">Unknown</div>
-                <div class="result-link">xx32o24000.uninet</div>
-                <div>Please... leave me...</div>
-            </div>
-        `;
-    } else if (query === "") {
-        resultsDiv.innerHTML = "<p>No search query entered.</p>";
+    const allResults = [
+        {
+            title: "Unknown",
+            link: "xx32o24000.uninet",
+            desc: "Please... leave me...",
+            click: () => window.open('unknown.html', '_blank')
+        },
+        {
+            title: "Trollbox",
+            link: "windows93.net/trollbox",
+            desc: `No description provided - <span style="color: deepskyblue; text-decoration: underline; cursor: pointer;" onclick="window.open('no-desc.html', '_blank')">Learn why</span>`,
+            click: () => window.open('https://windows93.net/trollbox', '_blank')
+        },
+        {
+            title: "Fluxer",
+            link: "fluxer.gg",
+            desc: "Fluxer is the #1 most famous Discord clone ever made. Check it out!",
+            click: () => window.open('https://fluxer.gg', '_blank')
+        }
+    ];
+
+    if (query === "all pages") {
+        allResults.forEach(res => resultsDiv.appendChild(createResultElement(res)));
     } else {
-        resultsDiv.innerHTML = "<p>No results found.</p>";
+        let found = false;
+        allResults.forEach(res => {
+            if (res.title.toLowerCase() === query) {
+                resultsDiv.appendChild(createResultElement(res));
+                found = true;
+            }
+        });
+        if (!found) resultsDiv.innerHTML = "<p>No results found.</p>";
     }
 }
 
-function openUnknown() {
-    window.open("unknown.html", "_blank");
+// Create a result element properly with clickable title
+function createResultElement(res) {
+    const div = document.createElement("div");
+    div.className = "result";
+
+    const title = document.createElement("div");
+    title.className = "result-title";
+    title.style.color = "blue";
+    if(res.click) title.addEventListener("click", res.click);
+    title.textContent = res.title;
+    div.appendChild(title);
+
+    const link = document.createElement("div");
+    link.className = "result-link";
+    link.style.color = "green";
+    link.textContent = res.link;
+    div.appendChild(link);
+
+    const desc = document.createElement("div");
+    desc.innerHTML = res.desc;
+    div.appendChild(desc);
+
+    return div;
 }
 
-// Return to home screen
-function goHome() {
-    document.getElementById("home").style.display = "block";
-    document.getElementById("topbar").style.display = "none";
-    document.getElementById("results").innerHTML = "";
-    document.getElementById("searchInput").value = "";
+// Show all pages button
+function showAllPages() {
+    showResults("all pages");
 }
 </script>
 </body>
