@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unknown</title>
+    <link rel="icon" type="image/x-icon" href="UniverseNet.ico">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            background: black;
+            color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+            text-align: center;
+        }
+        h1 {
+            font-size: 60px;
+            margin: 0;
+            animation: flicker 2s infinite;
+        }
+        p {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                opacity: 1;
+            }
+            20%, 22%, 24%, 55% {
+                opacity: 0;
+            }
+        }
+        .glitch {
+            position: relative;
+            color: #00ff00;
+        }
+        .glitch::before, .glitch::after {
+            content: 'UNKNOWN';
+            position: absolute;
+            left: 0;
+        }
+        .glitch::before {
+            text-shadow: 2px 0 red;
+            clip: rect(0, 900px, 0, 0);
+            animation: glitchTop 2s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            text-shadow: -2px 0 blue;
+            clip: rect(0, 900px, 0, 0);
+            animation: glitchBottom 2s infinite linear alternate-reverse;
+        }
+        @keyframes glitchTop {
+            0% { clip: rect(0, 900px, 10px, 0); }
+            50% { clip: rect(5px, 900px, 15px, 0); }
+            100% { clip: rect(0, 900px, 10px, 0); }
+        }
+        @keyframes glitchBottom {
+            0% { clip: rect(10px, 900px, 20px, 0); }
+            50% { clip: rect(15px, 900px, 25px, 0); }
+            100% { clip: rect(10px, 900px, 20px, 0); }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="glitch">UNKNOWN</h1>
+    <p>Please... leave me...</p>
+    <p><em>Something is watching.</em></p>
+</body>
+</html>

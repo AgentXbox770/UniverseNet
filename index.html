@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UniverseNet</title>
+    <link rel="icon" type="image/x-icon" href="UniverseNet.ico">
+
+    <!-- Open Graph Meta -->
+    <meta property="og:title" content="UniverseNet">
+    <meta property="og:description" content="Search the world's information, including webpages, images, videos and more. UniverseNet has many special features to help you find exactly what you're looking for.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="UniverseNet_Title.png">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: white;
+        }
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .logo {
+            width: 300px;
+        }
+        .search-box {
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            width: 400px;
+            height: 30px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+        .topbar {
+            display: none;
+            padding: 10px;
+        }
+        .topbar img {
+            width: 120px;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        .topbar input {
+            width: 400px;
+            height: 30px;
+            margin-left: 20px;
+        }
+        .results {
+            margin: 30px 100px;
+        }
+        .result-title {
+            color: blue;
+            font-size: 18px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .result-link {
+            color: green;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="center" id="home">
+    <img src="UniverseNet_Title.png" class="logo"><br>
+    <div class="search-box">
+        <input type="text" id="searchInput"><br>
+        <button onclick="search()">UniverseNet Search</button>
+        <button id="luckyBtn" onclick="feelingLucky()">I'm Feeling Lucky</button>
+    </div>
+</div>
+
+<div class="topbar" id="topbar">
+    <img src="UniverseNet_Title.png" onclick="goHome()">
+    <input type="text" id="searchTop" onkeydown="checkEnter(event)">
+</div>
+
+<div class="results" id="results"></div>
+
+<script>
+let luckyClicked = false;
+
+function search() {
+    let query = document.getElementById("searchInput").value.toLowerCase();
+    showResults(query);
+}
+
+function feelingLucky() {
+    let btn = document.getElementById("luckyBtn");
+    luckyClicked = !luckyClicked;
+    btn.innerText = luckyClicked ? "I'm not Feeling Lucky" : "I'm Feeling Lucky";
+}
+
+function checkEnter(e) {
+    if (e.key === "Enter") {
+        showResults(document.getElementById("searchTop").value.toLowerCase());
+    }
+}
+
+function showResults(query) {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("topbar").style.display = "block";
+    let resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (query === "xx32o24000") {
+        resultsDiv.innerHTML = `
+            <div class="result">
+                <div class="result-title" onclick="openUnknown()">Unknown</div>
+                <div class="result-link">xx32o24000.uninet</div>
+                <div>Please... leave me...</div>
+            </div>
+        `;
+    } else if (query === "") {
+        resultsDiv.innerHTML = "<p>No search query entered.</p>";
+    } else {
+        resultsDiv.innerHTML = "<p>No results found.</p>";
+    }
+}
+
+function openUnknown() {
+    window.open("unknown.html", "_blank");
+}
+
+// Return to home screen
+function goHome() {
+    document.getElementById("home").style.display = "block";
+    document.getElementById("topbar").style.display = "none";
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("searchInput").value = "";
+}
+</script>
+</body>
+</html>
