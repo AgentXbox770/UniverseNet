@@ -1,106 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>UniverseNet</title>
-    <link rel="icon" type="image/x-icon" href="UniverseNet.ico">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniverseNet</title>
+<link rel="icon" href="UniverseNet.ico">
 
-    <!-- Open Graph meta -->
-    <meta property="og:title" content="UniverseNet">
-    <meta property="og:description" content="Search the world's information, including webpages, images, videos and more. UniverseNet has many special features to help you find exactly what you're looking for.">
-    <meta property="og:image" content="UniverseNet_Title.png">
-    <meta property="og:type" content="website">
+<!-- Open Graph -->
+<meta property="og:title" content="UniverseNet">
+<meta property="og:description" content="Search the world's information, including webpages, images, videos and more. UniverseNet has many special features to help you find exactly what you're looking for.">
+<meta property="og:image" content="UniverseNet_Title.png">
+<meta property="og:type" content="website">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: white;
-        }
-        .center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .logo {
-            width: 300px;
-            cursor: pointer;
-        }
-        .search-box {
-            margin-top: 20px;
-        }
-        input[type="text"] {
-            width: 400px;
-            height: 30px;
-            border: 1px solid #ccc;
-            padding: 5px;
-            font-size: 16px;
-            outline: none;
-        }
-        button {
-            margin-top: 10px;
-            padding: 8px 15px;
-            border: 1px solid #ccc;
-            background: #f8f9fa;
-            cursor: pointer;
-        }
-        .topbar {
-            display: none;
-            padding: 10px;
-        }
-        .topbar img {
-            width: 120px;
-            vertical-align: middle;
-            cursor: pointer;
-        }
-        .topbar input {
-            width: 400px;
-            height: 30px;
-            margin-left: 20px;
-        }
-        .results {
-            margin: 30px 100px;
-        }
-        .result-title {
-            color: blue;
-            font-size: 18px;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        .result-link {
-            color: green;
-            font-size: 14px;
-        }
-    </style>
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+}
+
+/* COOKIE MODAL STANDING */
+#cookieModal {
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: rgba(128,128,128,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#cookieBox {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#cookieBox .cookieTitle {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#cookieBox .cookieTitle img {
+    width: 120px;
+    margin-right: 10px;
+}
+
+#cookieBox .cookieTitle span {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#cookieText {
+    margin: 10px 0;
+    font-size: 14px;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#cookieCheckbox {
+    margin: 10px 0;
+}
+
+#cookieAccept, #cookieDecline {
+    margin: 5px;
+    padding: 8px 20px;
+    border:none;
+    border-radius: 25px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size: 14px;
+}
+
+#cookieAccept { background: #007BFF; color:white; display:none; }
+#cookieDecline { background: #FF4C4C; color:white; display:inline-block; }
+
+input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 10px;
+}
+
+/* MAIN SEARCH PAGE */
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    input[type="text"] { width: 90% !important; }
+    .results { margin: 20px !important; }
+}
+
+.logo { width: 250px; cursor: pointer; }
+input[type="text"] { width: 400px; height: 35px; padding: 5px; }
+button { margin-top: 10px; padding: 8px 15px; }
+.topbar { display: none; padding: 10px; }
+.topbar img { width: 100px; cursor: pointer; }
+.results { margin: 30px 100px; }
+.result-title { color: blue; cursor: pointer; }
+.result-link { color: green; }
+
+</style>
 </head>
 <body>
-<div class="center" id="home">
-    <img src="UniverseNet_Title.png" class="logo" onclick="goHome()"><br>
-    <div class="search-box">
-        <input type="text" id="searchInput"><br>
-        <button onclick="search()">UniverseNet Search</button>
-        <button id="luckyBtn" onclick="feelingLucky()">I'm Feeling Lucky</button><br>
-        <button onclick="showAllPages()">Discover All Pages</button>
+
+<!-- COOKIE MODAL -->
+<div id="cookieModal">
+    <div id="cookieBox">
+        <div class="cookieTitle">
+            <img src="UniverseNet_Title.png" alt="UniverseNet Logo">
+            <span>uses cookies! 🍪</span>
+        </div>
+        <div id="cookieText">
+            Welcome to UniverseNet! We use cookies to improve your experience, remember your preferences, analyze traffic, and personalize content. By accepting cookies, you help us create a smoother and more tailored experience. If you decline, some features may not work as intended, but you can still browse our site freely. Your privacy is important to us, and we never sell personal information.
+        </div>
+        <div id="cookieCheckbox">
+            <input type="checkbox" id="acceptCheck"> I understand and accept cookies
+        </div>
+        <button id="cookieAccept">Accept</button>
+        <button id="cookieDecline">Decline</button>
     </div>
 </div>
+
+<!-- MAIN SEARCH PAGE -->
+<div class="center" id="home" style="display:none;">
+    <img src="UniverseNet_Title.png" class="logo" onclick="goHome()"><br>
+    <input type="text" id="searchInput"><br>
+    <button onclick="search()">UniverseNet Search</button>
+    <button id="luckyBtn" onclick="feelingLucky()">I'm Feeling Lucky</button><br>
+    <button onclick="showAllPages()">Discover All Pages</button>
+</div>
+
 <div class="topbar" id="topbar">
     <img src="UniverseNet_Title.png" onclick="goHome()">
     <input type="text" id="searchTop" onkeydown="checkEnter(event)">
 </div>
+
 <div class="results" id="results"></div>
 
 <script>
-let luckyClicked = false;
+//////////////////////////////////////////////////
+// COOKIE MODAL LOGIC
+//////////////////////////////////////////////////
+const modal = document.getElementById("cookieModal");
+const checkbox = document.getElementById("acceptCheck");
+const acceptBtn = document.getElementById("cookieAccept");
+const declineBtn = document.getElementById("cookieDecline");
 
-// Main search
-function search() {
-    let query = document.getElementById("searchInput").value.toLowerCase();
-    showResults(query);
+checkbox.addEventListener("change", () => {
+    if (checkbox.checked) {
+        acceptBtn.style.display = "inline-block";
+        declineBtn.style.display = "none";
+    } else {
+        acceptBtn.style.display = "none";
+        declineBtn.style.display = "inline-block";
+    }
+});
+
+acceptBtn.addEventListener("click", () => {
+    localStorage.setItem("cookiesAccepted", "true");
+    modal.style.display = "none";
+    document.getElementById("home").style.display = "block";
+});
+
+declineBtn.addEventListener("click", () => {
+    localStorage.setItem("cookiesAccepted", "false");
+    modal.style.display = "none";
+    document.getElementById("home").style.display = "block";
+});
+
+// Automatically show/hide modal based on first visit
+if(localStorage.getItem("cookiesAccepted") !== null){
+    modal.style.display = "none";
+    document.getElementById("home").style.display = "block";
 }
 
-// I'm Feeling Lucky button: only changes text
+//////////////////////////////////////////////////
+// MAIN SEARCH PAGE LOGIC (UNCHANGED)
+//////////////////////////////////////////////////
+let luckyClicked = false;
+let dvdInterval;
+
+// SEARCH
+function search() {
+    let q = document.getElementById("searchInput").value.toLowerCase();
+    showResults(q);
+}
+
+// LUCKY
 function feelingLucky() {
     if (!luckyClicked) {
         document.getElementById("luckyBtn").innerText = "I'm not Feeling Lucky";
@@ -108,99 +205,104 @@ function feelingLucky() {
     }
 }
 
-// Enter in topbar
+// ENTER KEY
 function checkEnter(e) {
     if (e.key === "Enter") {
         showResults(document.getElementById("searchTop").value.toLowerCase());
     }
 }
 
-// Go back to home
+// HOME RESET
 function goHome() {
-    document.getElementById("home").style.display = "block";
-    document.getElementById("topbar").style.display = "none";
-    document.getElementById("results").innerHTML = "";
-    document.getElementById("searchInput").value = "";
-    document.getElementById("searchTop").value = "";
-    luckyClicked = false;
+    location.reload();
 }
 
-// Show search results
+// RESULTS
 function showResults(query) {
     document.getElementById("home").style.display = "none";
     document.getElementById("topbar").style.display = "block";
+
+    runEasterEggs(query);
+
     let resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
 
-    const allResults = [
-        {
-            title: "Unknown",
-            link: "xx32o24000.uninet",
-            desc: "Please... leave me...",
-            click: () => window.open('unknown.html', '_blank')
-        },
-        {
-            title: "Trollbox",
-            link: "windows93.net", // green text
-            desc: `No description provided - <span style="color: deepskyblue; text-decoration: underline; cursor: pointer;" onclick="window.open('no-desc.html', '_blank')">Learn why</span>`,
-            click: () => window.open('https://windows93.net/trollbox', '_blank') // full URL
-        },
-        {
-            title: "Fluxer",
-            link: "fluxer.gg",
-            desc: "Fluxer is the #1 most famous Discord clone ever made. Check it out!",
-            click: () => window.open('https://fluxer.gg', '_blank')
-        },
-        {
-            title: "VidLii",
-            link: "vidlii.com",
-            desc: "Display yourself.",
-            click: () => window.open('https://vidlii.com', '_blank')
-        },
-        {
-            title: "KamTape",
-            link: "KamTape.com",
-            desc: "Share your world.",
-            click: () => window.open('https://KamTape.com', '_blank')
-        }
+    const pages = [
+        {title:"Unknown", link:"xx32o24000.uninet", desc:"Please... leave me...", click:()=>window.open("unknown.html","_blank")},
+        {title:"Trollbox", link:"windows93.net", desc:`No description provided - <span style="color:deepskyblue;cursor:pointer" onclick="window.open('no-desc.html','_blank')">Learn why</span>`, click:()=>window.open("https://windows93.net/trollbox","_blank")},
+        {title:"Fluxer", link:"fluxer.gg", desc:"Fluxer is the #1 most famous Discord clone ever made.", click:()=>window.open("https://fluxer.gg","_blank")},
+        {title:"VidLii", link:"vidlii.com", desc:"Display yourself.", click:()=>window.open("https://vidlii.com","_blank")},
+        {title:"KamTape", link:"KamTape.com", desc:"Share your world.", click:()=>window.open("https://KamTape.com","_blank")}
     ];
 
-    // Partial matching: show results containing query anywhere in title
-    let matched = allResults.filter(res => res.title.toLowerCase().includes(query));
-    if (matched.length === 0) resultsDiv.innerHTML = "<p>No results found.</p>";
-    else matched.forEach(res => resultsDiv.appendChild(createResultElement(res)));
+    let match = pages.filter(p => p.title.toLowerCase().includes(query));
+    if(query==="") match = pages;
+
+    if(match.length===0) { resultsDiv.innerHTML="<p>No results found.</p>"; } 
+    else {
+        match.forEach(p=>{
+            let div=document.createElement("div");
+            div.innerHTML=`
+                <div class="result-title">${p.title}</div>
+                <div class="result-link">${p.link}</div>
+                <div>${p.desc}</div><br>`;
+            div.querySelector(".result-title").onclick=p.click;
+            resultsDiv.appendChild(div);
+        });
+    }
 }
 
-// Create a result element properly with clickable title
-function createResultElement(res) {
-    const div = document.createElement("div");
-    div.className = "result";
+// SHOW ALL
+function showAllPages() { showResults(""); }
 
-    const title = document.createElement("div");
-    title.className = "result-title";
-    title.style.color = "blue";
-    if(res.click) title.addEventListener("click", res.click);
-    title.textContent = res.title;
-    div.appendChild(title);
-
-    const link = document.createElement("div");
-    link.className = "result-link";
-    link.style.color = "green";
-    link.textContent = res.link;
-    div.appendChild(link);
-
-    const desc = document.createElement("div");
-    desc.innerHTML = res.desc;
-    div.appendChild(desc);
-
-    return div;
+//////////////////////////////////////////////////
+// EASTER EGGS SYSTEM (UNCHANGED)
+//////////////////////////////////////////////////
+function runEasterEggs(q){
+    if(q.includes("dvd")) dvd();
+    if(q.includes("gravity")) gravity();
+    if(q.includes("magnet")) magnet();
+    if(q.includes("zoom")) zoom();
+    if(q.includes("freeze")) freeze();
+    if(q.includes("reverse")) reverse();
+    if(q.includes("rainbow")) rainbow();
+    if(q.includes("explode")) explode();
+    if(q.includes("unstable")) unstable();
 }
 
-// Show all pages button
-function showAllPages() {
-    const allResults = ["unknown","trollbox","fluxer","vidlii","kamtape"];
-    showResults(""); // show all results regardless of query
+// DVD
+function dvd(){
+    const logo=document.querySelector(".topbar img");
+    let x=100,y=100,dx=2,dy=2;
+    logo.style.position="fixed";
+    dvdInterval=setInterval(()=>{
+        let maxX=window.innerWidth-logo.clientWidth;
+        let maxY=window.innerHeight-logo.clientHeight;
+        x+=dx; y+=dy;
+        if(x<=0||x>=maxX){dx*=-1;logo.style.filter=`hue-rotate(${Math.random()*360}deg)`;}
+        if(y<=0||y>=maxY){dy*=-1;logo.style.filter=`hue-rotate(${Math.random()*360}deg)`;}
+        logo.style.left=x+"px"; logo.style.top=y+"px";
+    },10);
 }
+
+// GRAVITY
+function gravity(){document.querySelectorAll("*").forEach(el=>{el.style.transition="1s"; el.style.transform="translateY(600px)";});}
+// MAGNET
+function magnet(){ const logo=document.querySelector(".topbar img"); function move(x,y){logo.style.position="fixed"; logo.style.left = logo.offsetLeft + (x-logo.offsetLeft)*0.05 + "px"; logo.style.top  = logo.offsetTop  + (y-logo.offsetTop)*0.05 + "px"; } document.addEventListener("mousemove",e=>move(e.clientX,e.clientY)); document.addEventListener("touchmove",e=>move(e.touches[0].clientX,e.touches[0].clientY)); }
+// ZOOM
+function zoom(){let s=1; document.addEventListener("click",()=>{s+=0.1; document.body.style.transform=`scale(${s})`;});}
+// FREEZE SAFE
+function freeze(){document.body.style.pointerEvents="none"; setTimeout(()=>document.body.style.pointerEvents="auto",3000);}
+// REVERSE
+function reverse(){document.body.style.transition="1s"; document.body.style.transform="rotate(180deg)";}
+// RAINBOW
+function rainbow(){setInterval(()=>{document.body.style.filter=`hue-rotate(${Date.now()/10}deg)`;},50);}
+// EXPLODE
+function explode(){document.querySelectorAll("*").forEach(el=>{let x=(Math.random()-0.5)*1000; let y=(Math.random()-0.5)*1000; el.style.transform=`translate(${x}px,${y}px) rotate(${Math.random()*360}deg)`;});}
+// UNSTABLE
+function unstable(){document.querySelectorAll("button").forEach(btn=>{function move(){btn.style.position="relative"; btn.style.left=(Math.random()*200-100)+"px"; btn.style.top=(Math.random()*200-100)+"px";} btn.addEventListener("mouseover",move); btn.addEventListener("touchstart",move);});}
+
 </script>
+
 </body>
-</html>
+        </html>
