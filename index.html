@@ -13,12 +13,8 @@
 <meta property="og:type" content="website">
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-}
+body { margin: 0; font-family: Arial; }
 
-/* COOKIE MODAL STANDING */
 #cookieModal {
     position: fixed;
     top:0; left:0; width:100%; height:100%;
@@ -41,20 +37,15 @@ body {
     align-items: center;
 }
 
-#cookieBox .cookieTitle {
+.cookieTitle {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
 }
 
-#cookieBox .cookieTitle img {
+.cookieTitle img {
     width: 120px;
     margin-right: 10px;
-}
-
-#cookieBox .cookieTitle span {
-    font-weight: bold;
-    font-size: 16px;
 }
 
 #cookieText {
@@ -65,10 +56,6 @@ body {
     overflow-y: auto;
 }
 
-#cookieCheckbox {
-    margin: 10px 0;
-}
-
 #cookieAccept, #cookieDecline {
     margin: 5px;
     padding: 8px 20px;
@@ -76,18 +63,11 @@ body {
     border-radius: 25px;
     cursor:pointer;
     font-weight:bold;
-    font-size: 14px;
 }
 
 #cookieAccept { background: #007BFF; color:white; display:none; }
-#cookieDecline { background: #FF4C4C; color:white; display:inline-block; }
+#cookieDecline { background: #FF4C4C; color:white; }
 
-input[type="checkbox"] {
-    transform: scale(1.2);
-    margin-right: 10px;
-}
-
-/* MAIN SEARCH PAGE */
 .center {
     position: absolute;
     top: 50%;
@@ -96,43 +76,45 @@ input[type="checkbox"] {
     text-align: center;
 }
 
-@media (max-width: 600px) {
-    input[type="text"] { width: 90% !important; }
-    .results { margin: 20px !important; }
-}
-
 .logo { width: 250px; cursor: pointer; }
 input[type="text"] { width: 400px; height: 35px; padding: 5px; }
 button { margin-top: 10px; padding: 8px 15px; }
+
 .topbar { display: none; padding: 10px; }
 .topbar img { width: 100px; cursor: pointer; }
+
 .results { margin: 30px 100px; }
 .result-title { color: blue; cursor: pointer; }
 .result-link { color: green; }
 
+@media (max-width: 600px) {
+    input[type="text"] { width: 90% !important; }
+    .results { margin: 20px !important; }
+}
 </style>
 </head>
+
 <body>
 
 <!-- COOKIE MODAL -->
 <div id="cookieModal">
     <div id="cookieBox">
         <div class="cookieTitle">
-            <img src="UniverseNet_Title.png" alt="UniverseNet Logo">
-            <span>uses cookies! 🍪</span>
+            <img src="UniverseNet_Title.png">
+            <b>uses cookies! 🍪</b>
         </div>
+
         <div id="cookieText">
             Welcome to UniverseNet! We use cookies to improve your experience, remember your preferences, analyze traffic, and personalize content. By accepting cookies, you help us create a smoother and more tailored experience. If you decline, some features may not work as intended, but you can still browse our site freely. Your privacy is important to us, and we never sell personal information.
         </div>
-        <div id="cookieCheckbox">
-            <input type="checkbox" id="acceptCheck"> I understand and accept cookies
-        </div>
+
+        <input type="checkbox" id="acceptCheck"> Accept cookies<br>
         <button id="cookieAccept">Accept</button>
         <button id="cookieDecline">Decline</button>
     </div>
 </div>
 
-<!-- MAIN SEARCH PAGE -->
+<!-- MAIN -->
 <div class="center" id="home" style="display:none;">
     <img src="UniverseNet_Title.png" class="logo" onclick="goHome()"><br>
     <input type="text" id="searchInput"><br>
@@ -150,54 +132,49 @@ button { margin-top: 10px; padding: 8px 15px; }
 
 <script>
 //////////////////////////////////////////////////
-// COOKIE MODAL LOGIC
+// COOKIE (FIXED: SAVED)
 //////////////////////////////////////////////////
-const modal = document.getElementById("cookieModal");
 const checkbox = document.getElementById("acceptCheck");
 const acceptBtn = document.getElementById("cookieAccept");
 const declineBtn = document.getElementById("cookieDecline");
 
-checkbox.addEventListener("change", () => {
-    if (checkbox.checked) {
-        acceptBtn.style.display = "inline-block";
-        declineBtn.style.display = "none";
-    } else {
-        acceptBtn.style.display = "none";
-        declineBtn.style.display = "inline-block";
-    }
-});
+checkbox.onchange = () => {
+    acceptBtn.style.display = checkbox.checked ? "inline-block" : "none";
+    declineBtn.style.display = checkbox.checked ? "none" : "inline-block";
+};
 
-acceptBtn.addEventListener("click", () => {
-    localStorage.setItem("cookiesAccepted", "true");
-    modal.style.display = "none";
+acceptBtn.onclick = () => {
+    localStorage.setItem("cookieChoice","accepted");
+    closeCookie();
+};
+
+declineBtn.onclick = () => {
+    localStorage.setItem("cookieChoice","declined");
+    closeCookie();
+};
+
+function closeCookie(){
+    document.getElementById("cookieModal").style.display = "none";
     document.getElementById("home").style.display = "block";
-});
+}
 
-declineBtn.addEventListener("click", () => {
-    localStorage.setItem("cookiesAccepted", "false");
-    modal.style.display = "none";
-    document.getElementById("home").style.display = "block";
-});
-
-// Automatically show/hide modal based on first visit
-if(localStorage.getItem("cookiesAccepted") !== null){
-    modal.style.display = "none";
+// LOAD CHECK
+if(localStorage.getItem("cookieChoice")){
+    document.getElementById("cookieModal").style.display = "none";
     document.getElementById("home").style.display = "block";
 }
 
 //////////////////////////////////////////////////
-// MAIN SEARCH PAGE LOGIC (UNCHANGED)
+// SEARCH
 //////////////////////////////////////////////////
 let luckyClicked = false;
 let dvdInterval;
 
-// SEARCH
 function search() {
     let q = document.getElementById("searchInput").value.toLowerCase();
     showResults(q);
 }
 
-// LUCKY
 function feelingLucky() {
     if (!luckyClicked) {
         document.getElementById("luckyBtn").innerText = "I'm not Feeling Lucky";
@@ -205,24 +182,21 @@ function feelingLucky() {
     }
 }
 
-// ENTER KEY
 function checkEnter(e) {
     if (e.key === "Enter") {
         showResults(document.getElementById("searchTop").value.toLowerCase());
     }
 }
 
-// HOME RESET
 function goHome() {
     location.reload();
 }
 
-// RESULTS
 function showResults(query) {
     document.getElementById("home").style.display = "none";
     document.getElementById("topbar").style.display = "block";
 
-    runEasterEggs(query);
+    if(query.includes("dvd")) dvd();
 
     let resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
@@ -232,14 +206,17 @@ function showResults(query) {
         {title:"Trollbox", link:"windows93.net", desc:`No description provided - <span style="color:deepskyblue;cursor:pointer" onclick="window.open('no-desc.html','_blank')">Learn why</span>`, click:()=>window.open("https://windows93.net/trollbox","_blank")},
         {title:"Fluxer", link:"fluxer.gg", desc:"Fluxer is the #1 most famous Discord clone ever made.", click:()=>window.open("https://fluxer.gg","_blank")},
         {title:"VidLii", link:"vidlii.com", desc:"Display yourself.", click:()=>window.open("https://vidlii.com","_blank")},
-        {title:"KamTape", link:"KamTape.com", desc:"Share your world.", click:()=>window.open("https://KamTape.com","_blank")}
+        {title:"KamTape", link:"KamTape.com", desc:"Share your world.", click:()=>window.open("https://KamTape.com","_blank")},
+        {title:"Homestuck", link:"www.homestuck.com", desc:"A tale about a boy and his friends and a game they play together. About 8,000 pages. Don't say we didn't warn you.", click:()=>window.open("https://www.homestuck.com","_blank")},
+        {title:"Homestar Runner", link:"www.homestarrunner.com", desc:"Everybody Everybody!", click:()=>window.open("https://www.homestarrunner.com","_blank")}
     ];
 
     let match = pages.filter(p => p.title.toLowerCase().includes(query));
     if(query==="") match = pages;
 
-    if(match.length===0) { resultsDiv.innerHTML="<p>No results found.</p>"; } 
-    else {
+    if(match.length===0) {
+        resultsDiv.innerHTML="<p>No results found.</p>";
+    } else {
         match.forEach(p=>{
             let div=document.createElement("div");
             div.innerHTML=`
@@ -252,57 +229,33 @@ function showResults(query) {
     }
 }
 
-// SHOW ALL
-function showAllPages() { showResults(""); }
-
-//////////////////////////////////////////////////
-// EASTER EGGS SYSTEM (UNCHANGED)
-//////////////////////////////////////////////////
-function runEasterEggs(q){
-    if(q.includes("dvd")) dvd();
-    if(q.includes("gravity")) gravity();
-    if(q.includes("magnet")) magnet();
-    if(q.includes("zoom")) zoom();
-    if(q.includes("freeze")) freeze();
-    if(q.includes("reverse")) reverse();
-    if(q.includes("rainbow")) rainbow();
-    if(q.includes("explode")) explode();
-    if(q.includes("unstable")) unstable();
+function showAllPages() {
+    showResults("");
 }
 
+//////////////////////////////////////////////////
 // DVD
+//////////////////////////////////////////////////
 function dvd(){
     const logo=document.querySelector(".topbar img");
     let x=100,y=100,dx=2,dy=2;
     logo.style.position="fixed";
+
+    clearInterval(dvdInterval);
     dvdInterval=setInterval(()=>{
         let maxX=window.innerWidth-logo.clientWidth;
         let maxY=window.innerHeight-logo.clientHeight;
+
         x+=dx; y+=dy;
+
         if(x<=0||x>=maxX){dx*=-1;logo.style.filter=`hue-rotate(${Math.random()*360}deg)`;}
         if(y<=0||y>=maxY){dy*=-1;logo.style.filter=`hue-rotate(${Math.random()*360}deg)`;}
-        logo.style.left=x+"px"; logo.style.top=y+"px";
+
+        logo.style.left=x+"px";
+        logo.style.top=y+"px";
     },10);
 }
-
-// GRAVITY
-function gravity(){document.querySelectorAll("*").forEach(el=>{el.style.transition="1s"; el.style.transform="translateY(600px)";});}
-// MAGNET
-function magnet(){ const logo=document.querySelector(".topbar img"); function move(x,y){logo.style.position="fixed"; logo.style.left = logo.offsetLeft + (x-logo.offsetLeft)*0.05 + "px"; logo.style.top  = logo.offsetTop  + (y-logo.offsetTop)*0.05 + "px"; } document.addEventListener("mousemove",e=>move(e.clientX,e.clientY)); document.addEventListener("touchmove",e=>move(e.touches[0].clientX,e.touches[0].clientY)); }
-// ZOOM
-function zoom(){let s=1; document.addEventListener("click",()=>{s+=0.1; document.body.style.transform=`scale(${s})`;});}
-// FREEZE SAFE
-function freeze(){document.body.style.pointerEvents="none"; setTimeout(()=>document.body.style.pointerEvents="auto",3000);}
-// REVERSE
-function reverse(){document.body.style.transition="1s"; document.body.style.transform="rotate(180deg)";}
-// RAINBOW
-function rainbow(){setInterval(()=>{document.body.style.filter=`hue-rotate(${Date.now()/10}deg)`;},50);}
-// EXPLODE
-function explode(){document.querySelectorAll("*").forEach(el=>{let x=(Math.random()-0.5)*1000; let y=(Math.random()-0.5)*1000; el.style.transform=`translate(${x}px,${y}px) rotate(${Math.random()*360}deg)`;});}
-// UNSTABLE
-function unstable(){document.querySelectorAll("button").forEach(btn=>{function move(){btn.style.position="relative"; btn.style.left=(Math.random()*200-100)+"px"; btn.style.top=(Math.random()*200-100)+"px";} btn.addEventListener("mouseover",move); btn.addEventListener("touchstart",move);});}
-
 </script>
 
 </body>
-        </html>
+</html>
